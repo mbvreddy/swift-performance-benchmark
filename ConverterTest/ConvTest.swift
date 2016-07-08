@@ -3,6 +3,7 @@
 //
 //
 //  Created by David Jones (@djones6) on 02/06/2016 
+//  Modified by Bhaktavatsal Reddy (@mbvreddy) on 07/07/2016
 //
 //
 
@@ -78,6 +79,30 @@ if (DEBUG) {
   print("Length: \(LENGTH)")
   print("Debug: \(DEBUG)")
 }
+// list of encodings
+let ENCODINGS: [UInt] = [NSASCIIStringEncoding,
+                         NSNEXTSTEPStringEncoding,
+                         NSJapaneseEUCStringEncoding,
+                         NSUTF8StringEncoding,
+                         NSISOLatin1StringEncoding,
+                         NSSymbolStringEncoding,
+                         NSNonLossyASCIIStringEncoding,
+                         NSShiftJISStringEncoding,
+                         NSISOLatin2StringEncoding,
+                         NSUnicodeStringEncoding,
+                         NSWindowsCP1251StringEncoding,
+                         NSWindowsCP1252StringEncoding,
+                         NSWindowsCP1253StringEncoding,
+                         NSWindowsCP1254StringEncoding,
+                         NSWindowsCP1250StringEncoding,
+                         NSISO2022JPStringEncoding,
+                         NSMacOSRomanStringEncoding,
+                         NSUTF16StringEncoding,
+                         NSUTF16BigEndianStringEncoding,
+                         NSUTF16LittleEndianStringEncoding,
+                         NSUTF32StringEncoding,
+                         NSUTF32BigEndianStringEncoding,
+                         NSUTF32LittleEndianStringEncoding]
 
 // The string to convert
 let PAYLOAD:String
@@ -93,24 +118,24 @@ if DEBUG { print("Payload is \(PAYLOAD.characters.count) chars") }
 let queue = dispatch_queue_create("hello", DISPATCH_QUEUE_CONCURRENT)
 
 // Block to be scheduled
-func code(_ instance: String) -> () -> Void {
+func code(_ instance: String, using encoding: UInt) -> () -> Void {
 return {
   for _ in 1...EFFORT {
-    let _ = PAYLOAD.data(using: NSUTF8StringEncoding)
+    let _ = PAYLOAD.data(using: encoding)
   }
   if DEBUG {  print("\(instance) done") }
   // Dispatch a new block to replace this one
-  dispatch_async(queue, code("\(instance)+"))
+    dispatch_async(queue, code("\(instance)+", using: encoding))
 }
 }
 
 print("Queueing \(CONCURRENCY) blocks")
-
-// Queue the initial blocks
-for i in 1...CONCURRENCY {
-  dispatch_async(queue, code("\(i)"))
+for enc in ENCODINGS {
+    // Queue the initial blocks
+    for i in 1...CONCURRENCY {
+        dispatch_async(queue, code("\(i)", using: enc))
+    }
 }
-
 print("Go!")
 
 // Go
