@@ -79,8 +79,8 @@ if (DEBUG) {
   print("Length: \(LENGTH)")
   print("Debug: \(DEBUG)")
 }
-// list of encodings
-let ENCODINGS: [UInt] = [NSASCIIStringEncoding,
+// list of encodings - for SNAPSHOT build upto June 20 2016
+/*let ENCODINGS: [UInt] = [NSASCIIStringEncoding,
                          NSNEXTSTEPStringEncoding,
                          NSJapaneseEUCStringEncoding,
                          NSUTF8StringEncoding,
@@ -102,7 +102,32 @@ let ENCODINGS: [UInt] = [NSASCIIStringEncoding,
                          NSUTF16LittleEndianStringEncoding,
                          NSUTF32StringEncoding,
                          NSUTF32BigEndianStringEncoding,
-                         NSUTF32LittleEndianStringEncoding]
+                         NSUTF32LittleEndianStringEncoding]*/
+
+// list of encodings - to run with latest source
+let ENCODINGS: [String.Encoding] = [String.Encoding.ascii,
+                                    String.Encoding.nextstep,
+                                    String.Encoding.japaneseEUC,
+                                    String.Encoding.utf8,
+                                    String.Encoding.isoLatin1,
+                                    String.Encoding.symbol,
+                                    String.Encoding.nonLossyASCII,
+                                    String.Encoding.shiftJIS,
+                                    String.Encoding.isoLatin2,
+                                    String.Encoding.unicode,
+                                    String.Encoding.windowsCP1251,
+                                    String.Encoding.windowsCP1252,
+                                    String.Encoding.windowsCP1253,
+                                    String.Encoding.windowsCP1254,
+                                    String.Encoding.windowsCP1250,
+                                    String.Encoding.iso2022JP,
+                                    String.Encoding.macOSRoman,
+                                    String.Encoding.utf16,
+                                    String.Encoding.utf16BigEndian,
+                                    String.Encoding.utf16LittleEndian,
+                                    String.Encoding.utf32,
+                                    String.Encoding.utf32BigEndian,
+                                    String.Encoding.utf32LittleEndian]
 
 // The string to convert
 let PAYLOAD:String
@@ -118,7 +143,8 @@ if DEBUG { print("Payload is \(PAYLOAD.characters.count) chars") }
 let queue = dispatch_queue_create("hello", DISPATCH_QUEUE_CONCURRENT)
 
 // Block to be scheduled
-func code(_ instance: String, using encoding: UInt) -> () -> Void {
+//func code(_ instance: String, using encoding: UInt) -> () -> Void {
+func code(_ instance: String, using encoding: String.Encoding) -> () -> Void {
 return {
   for _ in 1...EFFORT {
     let _ = PAYLOAD.data(using: encoding)
