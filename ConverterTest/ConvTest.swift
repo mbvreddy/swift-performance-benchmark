@@ -140,7 +140,8 @@ PAYLOAD = String(_payload.characters.dropLast(_payload.characters.count - LENGTH
 if DEBUG { print("Payload is \(PAYLOAD.characters.count) chars") }
 
 // Create a queue to run blocks in parallel
-let queue = dispatch_queue_create("hello", DISPATCH_QUEUE_CONCURRENT)
+let queue = DispatchQueue(label: "hello", attributes: .concurrent)
+
 
 // Block to be scheduled
 //func code(_ instance: String, using encoding: UInt) -> () -> Void {
@@ -151,7 +152,9 @@ return {
   }
   if DEBUG {  print("\(instance) done") }
   // Dispatch a new block to replace this one
-    dispatch_async(queue, code("\(instance)+", using: encoding))
+    queue.async{
+        code("\(instance)+", using: encoding)()
+    }
 }
 }
 
@@ -159,10 +162,12 @@ print("Queueing \(CONCURRENCY) blocks")
 for enc in ENCODINGS {
     // Queue the initial blocks
     for i in 1...CONCURRENCY {
-        dispatch_async(queue, code("\(i)", using: enc))
+        queue.async{
+            code("\(i)", using: enc)()
+        }
     }
 }
 print("Go!")
 
 // Go
-dispatch_main()
+dispatchMain()
